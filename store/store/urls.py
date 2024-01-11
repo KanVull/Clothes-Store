@@ -5,7 +5,6 @@ from django.conf import settings
 
 from products.views import (
     index,
-    products,
 )
 
 urlpatterns = [

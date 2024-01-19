@@ -2,6 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+
 class ProductCategory(models.Model):
     """Model of items category."""
     name = models.CharField(max_length=128, unique=True)

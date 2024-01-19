@@ -1,6 +1,6 @@
 """Models of store."""
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser
 
 class ProductCategory(models.Model):
     """Model of items category."""
@@ -25,3 +25,8 @@ class Product(models.Model):
 
     def __str__(self):
         return f'Product: {self.name} | Category: {self.category}'
+
+
+class User(AbstractUser):
+    """Model of user."""
+    image = models.ImageField(upload_to='users_images', null=True, blank=True)

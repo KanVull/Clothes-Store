@@ -2,7 +2,10 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
 from django.urls import reverse
 
-from users.forms import UserLoginForm
+from users.forms import (
+    UserLoginForm,
+    UserRegistrationForm,
+)
 
 
 def login(request):
@@ -30,8 +33,17 @@ def login(request):
 
 def register(request):
     """View for register.html page."""
+    if request.method == 'POST':
+        form = UserRegistrationForm(data=request.POST)
+        print(form.errors)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('u:login'))
+    else:
+        form = UserRegistrationForm()
     context = {
         'title': 'Store - Sign Up',
+        'form': form,
     }
     return render(request, 'users/register.html', context=context)
 

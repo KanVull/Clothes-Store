@@ -70,3 +70,9 @@ def profile(request):
         'form': form,
     }
     return render(request, 'users/profile.html', context=context)
+
+
+def logout(request):
+    """View to logout a user."""
+    auth.logout(request)
+    return HttpResponseRedirect(reverse('index'))

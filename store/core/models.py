@@ -33,12 +33,25 @@ class User(AbstractUser):
     image = models.ImageField(upload_to='users_images', null=True, blank=True)
 
 
+class CartQueryset(models.QuerySet):
+    def total_sum(self):
+        return sum(cart.sum() for cart in self.filter())
+
+    def total_quantity(self):
+        return sum(cart.quantity for cart in self)
+
+
 class Cart(models.Model):
     """Model of user's cart."""
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField(default=0)
     created_timestamp = models.DateTimeField(auto_now_add=True)
+
+    objects = CartQueryset.as_manager()
+
+    def sum(self):
+        return self.product.price * self.quantity
 
     def __str__(self):
         return f'Cart for {self.user.email} | Product: {self.product.name}'

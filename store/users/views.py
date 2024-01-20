@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth, messages
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
 from core.models import Cart
@@ -53,6 +54,7 @@ def register(request):
     return render(request, 'users/register.html', context=context)
 
 
+@login_required
 def profile(request):
     """View for profile.html page."""
     if request.method == 'POST':

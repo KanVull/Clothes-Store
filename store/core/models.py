@@ -31,3 +31,14 @@ class Product(models.Model):
 class User(AbstractUser):
     """Model of user."""
     image = models.ImageField(upload_to='users_images', null=True, blank=True)
+
+
+class Cart(models.Model):
+    """Model of user's cart."""
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
+    quantity = models.PositiveSmallIntegerField(default=0)
+    created_timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Cart for {self.user.email} | Product: {self.product.name}'

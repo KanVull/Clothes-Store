@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth, messages
 from django.urls import reverse
 
+from core.models import Cart
 from users.forms import (
     UserLoginForm,
     UserRegistrationForm,
@@ -68,6 +69,7 @@ def profile(request):
     context = {
         'title': 'Store - Profile',
         'form': form,
+        'carts': Cart.objects.filter(user=request.user),
     }
     return render(request, 'users/profile.html', context=context)
 

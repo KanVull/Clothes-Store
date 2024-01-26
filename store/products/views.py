@@ -3,6 +3,7 @@ from django.db.models.query import QuerySet
 from django.shortcuts import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
+from common.views import TitleMixin
 
 from django.contrib.auth.decorators import login_required
 
@@ -13,22 +14,23 @@ from core.models import (
 )
 
 
-class IndexView(TemplateView):
+class IndexView(TitleMixin, TemplateView):
     """View for the main page."""
     template_name = 'products/index.html'
+    title = 'Store'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super(IndexView, self).get_context_data()
         context.update({
-            'title': 'Store',
-            'is_promotion': False,
+            'is_promotion': True,
             'username': 'Roman',
         })
         return context
 
 
-class ProductListView(ListView):
+class ProductListView(TitleMixin, ListView):
     """View for products page with category and pagination."""
+    title = 'Store - Catalog'
     model = Product
     template_name = 'products/products.html'
     paginate_by = 3
@@ -44,8 +46,6 @@ class ProductListView(ListView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super(ProductListView, self).get_context_data()
         context.update({
-            'title': 'Store - Catalog',
-            # 'products': products_paginator,
             'categories': ProductCategory.objects.all(),
         })
         return context

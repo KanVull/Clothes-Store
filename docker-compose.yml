@@ -15,6 +15,7 @@ services:
       - DB_NAME=devdb
       - DB_USER=devuser
       - DB_PASS=changeme
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
       - DEBUG=1
     depends_on:
       - db

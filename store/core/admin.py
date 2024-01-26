@@ -5,6 +5,7 @@ from core.models import (
     ProductCategory,
     User,
     Cart,
+    EmailVerification,
 )
 
 admin.site.register(ProductCategory)
@@ -27,7 +28,7 @@ class ProductAdmin(admin.ModelAdmin):
         'name',
         'price',
         'category',
-        'quantity'
+        'quantity',
     )
     fields = (
         'name',
@@ -51,3 +52,10 @@ class UserAdmin(admin.ModelAdmin):
     model = User
     list_display = ('username',)
     inlines = (CartAdmin,)
+
+
+@admin.register(EmailVerification)
+class EmailVerificationAdmin(admin.ModelAdmin):
+    list_display = ('code', 'user', 'expiration',)
+    fields = ('code', 'user', 'expiration', 'created',)
+    readonly_fields = ('created',)

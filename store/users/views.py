@@ -1,11 +1,13 @@
 from typing import Any
-from django.urls import reverse_lazy
+from django.shortcuts import HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 
 from common.views import TitleMixin
-from core.models import Cart, User
+from core.models import Cart, User, EmailVerification
 from users.forms import (
     UserLoginForm,
     UserRegistrationForm,
@@ -46,3 +48,24 @@ class UserProfileView(TitleMixin, UpdateView):
             'carts': Cart.objects.filter(user=self.object)
         })
         return context
+
+
+class EmailVerificationView(TitleMixin, TemplateView):
+    title = 'Store - Email Verification'
+    template_name = 'users/email_verification.html'
+
+    def get(self, request, *args, **kwargs):
+        code = kwargs.get('code')
+        user = User.objects.get(email=kwargs.get('email'))
+        email_vrf = EmailVerification.objects.filter(
+            user=user,
+            code=code,
+        )
+        if email_vrf.exists() and not email_vrf.first().is_expired():
+            user.is_verified_email = True
+            user.save()
+            return super(EmailVerificationView, self).get(
+                request, *args, **kwargs
+            )
+        else:
+            HttpResponseRedirect(reverse('index'))

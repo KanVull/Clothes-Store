@@ -1,6 +1,10 @@
 """Models of store."""
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.utils.timezone import now
 
 
 class ProductCategory(models.Model):
@@ -35,6 +39,7 @@ class Product(models.Model):
 class User(AbstractUser):
     """Model of user."""
     image = models.ImageField(upload_to='users_images', null=True, blank=True)
+    is_verified_email = models.BooleanField(default=False)
 
 
 class CartQueryset(models.QuerySet):
@@ -59,3 +64,36 @@ class Cart(models.Model):
 
     def __str__(self):
         return f'Cart for {self.user.email} | Product: {self.product.name}'
+
+
+class EmailVerification(models.Model):
+    code = models.UUIDField(unique=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    expiration = models.DateTimeField()
+
+    def send_verification_email(self):
+        link = reverse('u:email_verification', kwargs={
+            'email': self.user.email,
+            'code': self.code,
+        })
+        verification_link = f'{settings.DOMAIN_NAME}{link}'
+        subject = f'Email verification for {self.user.username}'
+        message = f'''
+            To verify your email on Store follow this link {verification_link}
+        '''
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[
+                self.user.email,
+            ],
+            fail_silently=False,
+        )
+
+    def is_expired(self):
+        return now() >= self.expiration
+
+    def __str__(self) -> str:
+        return f'EmailVerification object for {self.user.email}'

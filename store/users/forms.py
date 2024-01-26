@@ -1,17 +1,14 @@
 """Forms for users."""
 import uuid
 from datetime import timedelta
-
 from typing import Any
+
 from django import forms
-from django.contrib.auth.forms import (
-    AuthenticationForm,
-    UserCreationForm,
-    UserChangeForm,
-)
+from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
+                                       UserCreationForm)
 from django.utils.timezone import now
 
-from core.models import User, EmailVerification
+from core.models import EmailVerification, User
 
 
 class UserLoginForm(AuthenticationForm):

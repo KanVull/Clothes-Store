@@ -1,3 +1,3 @@
-from django.shortcuts import render, HttpResponse # noqa
+from django.shortcuts import HttpResponse, render  # noqa
 
 # Create your views here.

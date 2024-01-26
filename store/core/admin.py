@@ -1,12 +1,6 @@
 from django.contrib import admin
 
-from core.models import (
-    Product,
-    ProductCategory,
-    User,
-    Cart,
-    EmailVerification,
-)
+from core.models import Cart, EmailVerification, Product, ProductCategory, User
 
 admin.site.register(ProductCategory)
 

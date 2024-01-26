@@ -3,10 +3,10 @@
 
 .docker
 
-app/__pycache__/
-app/*/__pycache__/
-app/*/*/__pycache__/
-app/*/*/*/__pycache__/
+store/__pycache__/
+store/*/__pycache__/
+store/*/*/__pycache__/
+store/*/*/*/__pycache__/
 .env/
 .venv/
 venv/

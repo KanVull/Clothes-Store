@@ -1,9 +1,10 @@
+from typing import Any
 from django.shortcuts import render, HttpResponseRedirect
-from django.contrib import auth, messages
-from django.contrib.auth.decorators import login_required
-from django.urls import reverse
+from django.contrib import auth
+from django.urls import reverse, reverse_lazy
+from django.views.generic.edit import CreateView, UpdateView
 
-from core.models import Cart
+from core.models import Cart, User
 from users.forms import (
     UserLoginForm,
     UserRegistrationForm,
@@ -34,46 +35,37 @@ def login(request):
     return render(request, 'users/login.html', context=context)
 
 
-def register(request):
-    """View for register.html page."""
-    if request.method == 'POST':
-        form = UserRegistrationForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(
-                request,
-                "Congrats. Account was created successfully"
-            )
-            return HttpResponseRedirect(reverse('u:login'))
-    else:
-        form = UserRegistrationForm()
-    context = {
-        'title': 'Store - Sign Up',
-        'form': form,
-    }
-    return render(request, 'users/register.html', context=context)
+class UserRegistrationView(CreateView):
+    """ View for registration a new user."""
+    model = User
+    form_class = UserRegistrationForm
+    template_name = 'users/register.html'
+    success_url = reverse_lazy('u:login')
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super(UserRegistrationView, self).get_context_data(**kwargs)
+        context.update({
+            'title': 'Store - Registration',
+        })
+        return context
 
 
-@login_required
-def profile(request):
+class UserProfileView(UpdateView):
     """View for profile.html page."""
-    if request.method == 'POST':
-        form = UserProfileForm(
-            instance=request.user,
-            data=request.POST,
-            files=request.FILES,
-        )
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('u:profile'))
+    model = User
+    form_class = UserProfileForm
+    template_name = 'users/profile.html'
 
-    form = UserProfileForm(instance=request.user)
-    context = {
-        'title': 'Store - Profile',
-        'form': form,
-        'carts': Cart.objects.filter(user=request.user),
-    }
-    return render(request, 'users/profile.html', context=context)
+    def get_success_url(self) -> str:
+        return reverse_lazy('u:profile', args=(self.object.id,))
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super(UserProfileView, self).get_context_data(**kwargs)
+        context.update({
+            'title': 'Store - Account',
+            'carts': Cart.objects.filter(user=self.object)
+        })
+        return context
 
 
 def logout(request):

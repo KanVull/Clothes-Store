@@ -3,6 +3,7 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.views import LoginView
 
 from core.models import Cart, User
 from users.forms import (
@@ -10,6 +11,12 @@ from users.forms import (
     UserRegistrationForm,
     UserProfileForm,
 )
+
+
+class UserLoginView(LoginView):
+    """View for login.html page."""
+    template_name = 'users/login.html'
+    form_class = UserLoginForm
 
 
 def login(request):
@@ -66,9 +73,3 @@ class UserProfileView(UpdateView):
             'carts': Cart.objects.filter(user=self.object)
         })
         return context
-
-
-def logout(request):
-    """View to logout a user."""
-    auth.logout(request)
-    return HttpResponseRedirect(reverse('index'))

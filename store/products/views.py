@@ -1,4 +1,7 @@
+from typing import Any
 from django.shortcuts import render, HttpResponseRedirect
+from django.views.generic.base import TemplateView
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
@@ -9,14 +12,18 @@ from core.models import (
 )
 
 
-def index(request):
+class IndexView(TemplateView):
     """View for the main page."""
-    context = {
-        'title': 'Store',
-        'is_promotion': False,
-        'username': 'Roman',
-    }
-    return render(request, 'products/index.html', context=context)
+    template_name = 'products/index.html'
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super(IndexView, self).get_context_data()
+        context.update({
+            'title': 'Store',
+            'is_promotion': False,
+            'username': 'Roman',
+        })
+        return context
 
 
 def products(request, category_id=None, page_number=1):

@@ -1,9 +1,10 @@
 from typing import Any
-from django.shortcuts import render, HttpResponseRedirect
+from django.db.models.query import QuerySet
+from django.shortcuts import HttpResponseRedirect
 from django.views.generic.base import TemplateView
+from django.views.generic.list import ListView
 
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
 
 from core.models import (
     Product,
@@ -26,23 +27,28 @@ class IndexView(TemplateView):
         return context
 
 
-def products(request, category_id=None, page_number=1):
+class ProductListView(ListView):
     """View for products page with category and pagination."""
-    if category_id:
-        products = Product.objects.filter(category_id=category_id)
-    else:
-        products = Product.objects.all()
+    model = Product
+    template_name = 'products/products.html'
+    paginate_by = 3
 
-    per_page = 3
-    paginator = Paginator(products, per_page)
-    products_paginator = paginator.page(page_number)
+    def get_queryset(self) -> QuerySet[Any]:
+        queryset = super(ProductListView, self).get_queryset()
+        category_id = self.kwargs.get('category_id')
+        if category_id:
+            return queryset.filter(category_id=category_id)
 
-    context = {
-        'title': 'Store - Catalog',
-        'products': products_paginator,
-        'categories': ProductCategory.objects.all(),
-    }
-    return render(request, 'products/products.html', context=context)
+        return queryset
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super(ProductListView, self).get_context_data()
+        context.update({
+            'title': 'Store - Catalog',
+            # 'products': products_paginator,
+            'categories': ProductCategory.objects.all(),
+        })
+        return context
 
 
 @login_required

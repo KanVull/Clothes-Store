@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.yandex',
 
     'core',
     'products',
@@ -164,7 +166,32 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': [
             'user',
         ],
-    }
+    },
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+        'FETCH_USERINFO' : True,
+    },
+    'yandex': {
+        'SCOPE': [
+            "first_name",
+            "last_name",
+            "display_name",
+            "real_name",
+            "login",
+            "old_social_login",
+            "sex",
+            "id",
+            "client_id",
+            "psuid",
+        ],
+    },
 }
 
 # Sending email

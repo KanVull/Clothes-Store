@@ -10,6 +10,7 @@ urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('products/', include('products.urls', namespace='products')),
     path('u/', include('users.urls', namespace='u')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:

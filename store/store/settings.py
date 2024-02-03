@@ -92,10 +92,18 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
+REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': f'redis://{REDIS_HOST}:6379',
+    }
+}
+
 if DEBUG:
     import socket
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-    INTERNAL_IPS.extend([ip[: ip.rfind(".")] + ".1" for ip in ips])
+    INTERNAL_IPS.extend([ip[: ip.rfind('.')] + '.1' for ip in ips])
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

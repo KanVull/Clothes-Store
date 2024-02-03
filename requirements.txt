@@ -2,3 +2,4 @@ Django>=4.1.0,<4.2
 psycopg2>=2.9.9,<2.10
 Pillow>=10.1.0,<10.2
 django-allauth>=0.60.1,<0.61
+django-debug-toolbar>=4.3.0,<4.4

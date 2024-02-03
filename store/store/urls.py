@@ -11,6 +11,7 @@ urlpatterns = [
     path('products/', include('products.urls', namespace='products')),
     path('u/', include('users.urls', namespace='u')),
     path('accounts/', include('allauth.urls')),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 if settings.DEBUG:

@@ -72,7 +72,7 @@ class EmailVerification(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     expiration = models.DateTimeField()
 
-    def send_verification_email(self):
+    def send_email_verification(self):
         link = reverse('u:email_verification', kwargs={
             'email': self.user.email,
             'code': self.code,

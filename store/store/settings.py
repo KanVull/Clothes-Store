@@ -223,3 +223,8 @@ EMAIL_PORT = 465
 DEFAULT_FROM_EMAIL = "Store" 
 EMAIL_HOST_USER = 'storeverificate@gmail.com'
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+# Celery
+
+CELERY_BROCKER_URL = f'redis://{REDIS_HOST}:6379'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:6379'

@@ -5,3 +5,4 @@ django-allauth>=0.60.1,<0.61
 django-debug-toolbar>=4.3.0,<4.4
 redis>=5.0.1,<5.1
 hiredis>=2.3.2,<2.4
+celery[redis]>=5.3.6,<5.4

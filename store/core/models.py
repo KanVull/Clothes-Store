@@ -122,6 +122,6 @@ class Order(models.Model):
 
     def __str__(self):
         return f'''
-            Order #{self.id}. {self.first_name} {self.last_name} 
+            Order #{self.id}. {self.first_name} {self.last_name}
             | {self.created}
         '''

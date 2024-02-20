@@ -12,8 +12,13 @@ services:
       sh -c "python manage.py wait_for_db &&
              python manage.py migrate &&
              python manage.py runserver 0.0.0.0:8000"
-    env_file:
-      - ./.env
+    environment:
+      - DB_HOST=db
+      - DB_NAME=devdb
+      - DB_USER=devuser
+      - DB_PASS=changeme
+      - DEBUG=1
+      - REDIS_HOST=redis  
     depends_on:
       - db
       - redis
@@ -22,7 +27,8 @@ services:
     build: .
     command: celery -A store worker -l INFO
     env_file:
-      - ./.env
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
     depends_on:
       - db
       - redis
@@ -32,8 +38,6 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
-    env_file:
-      - ./.env
 
   db:
     image: postgres:16.1-alpine
@@ -42,8 +46,10 @@ services:
       - dev-db-data:/var/lib/postgresql/data
     expose:
       - 5432
-    env_file:
-      - ./.env
+    environment:
+      - POSTGRES_DB=devdb
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=changeme
 
 
 volumes:
